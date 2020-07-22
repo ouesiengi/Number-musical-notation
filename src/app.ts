@@ -19,16 +19,13 @@ const data = [
     { notes : [{ tones : ["b/1"]}]},
 ]
 
+
 const Renderer = Vex.Flow.Renderer;
 
-const renderer = new Renderer(<HTMLElement>document.getElementById('container'), Renderer.Backends.SVG);
+const renderer = new Renderer(<HTMLElement>document.getElementById('tabs'), Renderer.Backends.SVG);
 
 //step 1
-const nmn = new Nmn({padding_spacing: 30, row_spacing: 80, ctx_spacing: 500})
+const nmn = new Nmn({padding_spacing:50, row_spacing: 100, ctx_spacing: 700})
 
-//step 2 parse data
-nmn.parse(data)
-
-//step 3 render
-nmn.render(renderer)
-
+//step 2 parse data && render
+nmn.parse(data).render(renderer)

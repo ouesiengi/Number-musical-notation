@@ -1,3 +1,5 @@
+import * as Notations from './notations'
+
 class Options {
     public padding_spacing: number = 30
     public row_spacing: number = 80
@@ -23,7 +25,7 @@ class Layout {
     public fact_spacing: number
     public ctx_width: number = 0
     public ctx_height: number = 0
-    public default_spacing: number = 30
+    public default_spacing: number
 
     constructor(option: Options) {
         this.options = option
@@ -31,6 +33,7 @@ class Layout {
         this.y = this.options.row_spacing
         this.ctx_width = this.options.ctx_spacing
         this.fact_spacing = this.options.ctx_spacing - (this.options.padding_spacing * 2)
+        this.default_spacing = this.options.padding_spacing
     }
 
     public parse(tones: any): void {
@@ -44,11 +47,10 @@ class Layout {
                 this.tones.push(section)
             }
         }
-        this.correct()
+        this.correction()
     }
 
-    public correct(): void {
-
+    public correction(): void {
         for(let idx in this.tones) {
             const section = this.tones[idx]
             this.row_tone_total += section.tones.length
@@ -74,6 +76,13 @@ class Layout {
     }
 
     public render(): Array<any> {
+        const notation = {
+            number: new Notations.NumberNotation(),
+            segment: new Notations.SegmentNotation()
+        }
+
+        const segment = notation.segment.getOffset()
+
         let toneMaps: Array<any> = []
         let row_start = true
         for(let idx in this.tones) {
@@ -91,6 +100,7 @@ class Layout {
 
             let correct_spacing = this.row_correct_option[this.row_index] ? this.row_correct_option[this.row_index].correct_spacing : this.default_spacing
 
+            //数字音符
             for(let key in  section.tones) {
                 const node = section.tones[key]
                 if(row_start) {
@@ -99,25 +109,26 @@ class Layout {
                 } else {
                     this.x += correct_spacing
                 }
-
-                let textNode = {
+                let numberNode = {
                     option: {x: this.x, y: this.y},
                     type: 'text',
                     tones: node.tones,
                     slur: node.slur || null
                 }
-                toneMaps.push(textNode)
+                toneMaps.push(numberNode)
             }
 
             this.x += correct_spacing
 
-            let rectNode = {
-                option: {width: 1, height: 30, x: this.x + 5, y: this.y - 20},
+            //小段分隔符
+            let segmentNode = {
+                option: {width: notation.segment.width, height: notation.segment.height, x: this.x + segment.offsetX, y: this.y + segment.offsetY},
                 type: 'rect',
                 tones: null,
                 slur: null
             }
-            toneMaps.push(rectNode)
+
+            toneMaps.push(segmentNode)
 
         }
         return toneMaps

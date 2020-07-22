@@ -11,8 +11,9 @@ export default class Nmn {
     }
 
     //tones parse
-    public parse(tones: any) {
+    public parse(tones: any): Nmn{
         this.layout.parse(tones)
+        return this
     }
 
     format(tone: string): string {
@@ -29,7 +30,6 @@ export default class Nmn {
     setSegmentNode(attrs?: object): Element {
         return this.elements.createNode('rect', attrs)
     }
-
 
     //附点音符 default_spacing = 10
     setDottedNode() {
@@ -50,7 +50,7 @@ export default class Nmn {
         return node
     }
 
-    render(renderer: any) {
+    render(renderer: any): void {
 
         renderer.resize(this.layout.ctx_width, this.layout.ctx_height)
         const ctx = renderer.getContext()

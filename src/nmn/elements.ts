@@ -1,12 +1,5 @@
 export default class Elements {
 
-    context?: object
-
-    public setContext(context?: object) {
-        this.context = context
-        return this
-    }
-
     public setAttributes(el: Element, attrs?: object): Element {
         if(attrs) {
             for (let [k, v] of Object.entries(attrs)) {
