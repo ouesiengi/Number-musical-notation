@@ -1,24 +1,5 @@
 import {Nmn, Vex} from './nmn/main'
-
-const data = [
-    { notes : [{ tones : ["b/5"]}, {tones : ["b/3"]}], slur: [1, 2] },
-    { notes : [{ tones : ["b/5"]}, {tones : ["b/3"]}], slur: [1, 2] },
-    { notes : [{ tones : ["b/5"]}, {tones : ["b/3"]}, { tones : ["b/2"]}, {tones : ["b/3"]}] },
-    { notes : [{ tones : ["b/5"]}, {tones : ["-"]}]},
-    { notes : [{ tones : ["b/5"]}, { tones : ["b/5"]}, { tones : ["b/3"]}]},
-    { notes : [{ tones : ["b/6"]}, {tones : ["b/5"]}] },
-    { notes : [{ tones : ["b/3"]}, {tones : ["b/5"]}, { tones : ["b/3"]}, {tones : ["b/2"]}] },
-    { notes : [{ tones : ["b/1"]}, {tones : ["b/2"]}] },
-    { notes : [{ tones : ["b/3"]}, {tones : ["b/5"]}] },
-    { notes : [{ tones : ["b/3"]}, {tones : ["b/2"]}, { tones : ["b/1"]}, {tones : ["b/2"]}] },
-    { notes : [{ tones : ["b/3"]}, {tones : ["-"]}]},
-    { notes : [{ tones : ["b/6"]}, {tones : ["b/5"]}, { tones : ["b/6"]}, {tones : ["b/5"]}] },
-    { notes : [{ tones : ["b/2"]}, {tones : ["b/3"]}, { tones : ["b/5"]}] },
-    { notes : [{ tones : ["b/6"]}, {tones : ["b/5"]}, { tones : ["b/6"]}, {tones : ["b/5"]}] },
-    { notes : [{ tones : ["b/2"]}, {tones : ["b/3"]}] },
-    { notes : [{ tones : ["b/1"]}]},
-]
-
+import data from './data'
 
 const Renderer = Vex.Flow.Renderer;
 

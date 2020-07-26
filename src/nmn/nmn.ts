@@ -1,6 +1,17 @@
 import Elements from "./elements";
 import {Layout, Options} from "./layout";
 
+enum TONES {
+    X,
+    C,
+    D,
+    E,
+    F,
+    G,
+    A,
+    B
+}
+
 export default class Nmn {
 
     private elements: Elements = new Elements()
@@ -10,15 +21,18 @@ export default class Nmn {
         this.layout = new Layout(option)
     }
 
-    //tones parse
-    public parse(tones: any): Nmn{
-        this.layout.parse(tones)
+    //staves parse
+    public parse(data: any): Nmn{
+        let staves: Array<any> = data.tracks[0].staves || []
+        this.layout.parse(staves)
         return this
     }
 
     format(tone: string): string {
         let arr = tone.split("/");
-        return arr[arr.length - 1]
+        let t: string = arr[0]
+        // @ts-ignore
+        return TONES[t]
     }
 
     //反复记号 default_spacing = 10
