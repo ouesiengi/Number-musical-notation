@@ -1,16 +1,6 @@
 import Elements from "./elements";
 import {Layout, Options} from "./layout";
-
-enum TONES {
-    X,
-    C,
-    D,
-    E,
-    F,
-    G,
-    A,
-    B
-}
+import {Transition} from "./notations"
 
 export default class Nmn {
 
@@ -21,18 +11,13 @@ export default class Nmn {
         this.layout = new Layout(option)
     }
 
-    //staves parse
+    //data parse
     public parse(data: any): Nmn{
         let staves: Array<any> = data.tracks[0].staves || []
         this.layout.parse(staves)
-        return this
-    }
 
-    format(tone: string): string {
-        let arr = tone.split("/");
-        let t: string = arr[0]
-        // @ts-ignore
-        return TONES[t]
+
+        return this
     }
 
     //反复记号 default_spacing = 10
@@ -42,12 +27,24 @@ export default class Nmn {
 
     //小节分隔符 default_spacing = 1
     setSegmentNode(attrs?: object): Element {
+        //console.log(attrs)
         return this.elements.createNode('rect', attrs)
     }
 
     //附点音符 default_spacing = 10
     setDottedNode() {
 
+    }
+
+    //音符时间长度
+    setNotationLength(len: number, option: any): any {
+        switch (len) {
+            case 8:
+                const attr: object = {width: 10, height: 2, x: option.x, y: option.y + 5}
+                return this.elements.createNode('rect', attr)
+
+        }
+        return false
     }
 
     //连音符
@@ -57,9 +54,9 @@ export default class Nmn {
 
     //数字音符 default_spacing = 10
     setNumberToneNode(tones: Array<string>, attrs?: object): Element {
-        let tone = this.format(tones[0])
-        let node = this.elements.createNode('text', attrs)
-        let text = this.elements.createTextNode(tone)
+        let tone: number = Transition.parseTone(tones[0])
+        let node: Element = this.elements.createNode('text', attrs)
+        let text: Text = this.elements.createTextNode(String(tone))
         node.appendChild(text)
         return node
     }
@@ -77,6 +74,11 @@ export default class Nmn {
             switch (val.type) {
                 case 'text':
                     node = this.setNumberToneNode(val.tones, val.option);
+
+                    // const x = this.setNotationLength(val.duration, val.option)
+                    // if (x) {
+                    //     ctx.groups[0].appendChild(x)
+                    // }
                     break;
                 case 'rect':
                     node = this.setSegmentNode(val.option)

@@ -1,9 +1,11 @@
 const default_spacing = {
     number: {width: 10, height: 20},
-    segment: {width: 1, height: 30}
+    segment: {width: 1.5, height: 30}
 }
 
-interface Notations {
+enum TONES {C= 1, D, E, F, G, A, B}
+
+interface OffsetNotations {
     getOffset(): coordinate
 }
 
@@ -12,13 +14,13 @@ interface coordinate {
     offsetY: number
 }
 
-class NumberNotation implements Notations {
+class NumberNotation implements OffsetNotations {
     getOffset(): coordinate {
         return { offsetX: 0,offsetY: 0 }
     }
 }
 
-class SegmentNotation implements Notations {
+class SegmentNotation implements OffsetNotations {
     public width: number
     public height: number
     constructor() {
@@ -33,4 +35,37 @@ class SegmentNotation implements Notations {
     }
 }
 
-export {SegmentNotation, NumberNotation}
+class LenNotation implements OffsetNotations {
+    getOffset(): coordinate {
+        return {
+            offsetX: 0,
+            offsetY: 5
+        }
+    }
+}
+
+class Transition {
+    static parseTone(tone: string): number {
+        let t:string = tone.substr(0, 1)
+        switch (t) {
+            case 'C':
+                return TONES.C
+            case 'D':
+                return TONES.D
+            case 'E':
+                return TONES.E
+            case 'F':
+                return TONES.F
+            case 'G':
+                return TONES.G
+            case 'A':
+                return TONES.A
+            case 'B':
+                return TONES.B
+            default:
+                return 0
+        }
+    }
+}
+
+export {SegmentNotation, NumberNotation, LenNotation, Transition}

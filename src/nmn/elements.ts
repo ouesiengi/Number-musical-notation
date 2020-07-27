@@ -10,7 +10,7 @@ export default class Elements {
     }
 
     public createNode(node: string, attrs?: object): Element {
-        let n = document.createElementNS('http://www.w3.org/2000/svg', node)
+        let n:SVGElement = document.createElementNS('http://www.w3.org/2000/svg', node)
         return this.setAttributes(n, attrs)
     }
 
