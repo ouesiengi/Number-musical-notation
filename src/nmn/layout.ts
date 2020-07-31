@@ -1,4 +1,5 @@
 import * as Notations from './notations'
+import {Transition} from "./notations";
 
 class Options {
     public padding_spacing: number = 30
@@ -11,6 +12,8 @@ interface Section {
     spacing: number,
     tones: Array<any>,
 }
+
+enum BeatIndex{}
 
 class Layout {
     public options: Options
@@ -39,17 +42,41 @@ class Layout {
     public parse(tones: any): void {
         if(tones) {
             for(let idx in tones) {
+                let notes: Array<any> = tones[idx].notes
+                let note_total:number = notes.length
+                let newTones: Array<any> = []
+                //补充全音符和二分音符实际占位
+                for(let i in notes) {
+                    const duration = notes[i].duration
+                    newTones.push({tone: Transition.parseTone(notes[i].tones[0]), duration: duration})
+                    switch (duration) {
+                        case 1:
+                            note_total += 3
+                            newTones.push({tone: '-', duration: 0}, {tone: '-', duration: 0}, {tone: '-', duration: 0})
+                            break
+                        case 2:
+                            note_total += 1
+                            newTones.push({tone: '-', duration: 0})
+                            break
+                        default:
+                    }
+                }
+
+                //根据预设布局空间参数，计算每小节占用空间数据
                 let section: Section = {
                     section_idx: parseInt(idx),
-                    spacing: tones[idx].notes.length * this.options.padding_spacing + this.options.padding_spacing,
-                    tones: tones[idx].notes
+                    spacing: (note_total * this.options.padding_spacing) + this.options.padding_spacing,
+                    tones: newTones,
                 }
+
                 this.tones.push(section)
             }
         }
+
         this.correction()
     }
 
+    //根据布局空间实际宽度计算每行实际小节数，并计算节点实际间隔大小
     public correction(): void {
         for(let idx in this.tones) {
             const section: any = this.tones[idx]
@@ -100,31 +127,32 @@ class Layout {
 
             let correct_spacing = this.row_correct_option[this.row_index] ? this.row_correct_option[this.row_index].correct_spacing : this.default_spacing
 
-            //小段分析（音长度）
-            this.analyzing(section, this.x, this.y)
-
-            //数字音符
+            //小节分析
+            let section_hooks: Array<any> = this.analyzing(section, this.x, this.y, correct_spacing, row_start)
+            toneMaps = toneMaps.concat(section_hooks)
+            //音符节点
             for(let key in  section.tones) {
-                const node = section.tones[key]
+                const opts = section.tones[key]
                 if(row_start) {
                     this.x = this.default_spacing
                     row_start = false
                 } else {
                     this.x += correct_spacing
                 }
+
                 let numberNode = {
                     option: {x: this.x, y: this.y},
                     type: 'text',
-                    tones: node.tones,
-                    duration: node.duration
-                    //slur: node.slur || null
+                    tones: opts.tone,
+                    duration: opts.duration
                 }
                 toneMaps.push(numberNode)
+
             }
 
             this.x += correct_spacing
 
-            //小段分隔符
+            //小段分隔符节点
             let segmentNode = {
                 option: {width: notation.segment.width, height: notation.segment.height, x: this.x + segment.offsetX, y: this.y + segment.offsetY},
                 type: 'rect',
@@ -136,19 +164,61 @@ class Layout {
         return toneMaps
     }
 
-    analyzing(section: any, x: number, y: number){
-        //console.log(section)
-        const tones_total = section.tones.length
-        const beat = 2 //歌曲节拍（丢手绢）
+    analyzing(section: any, x: number, y: number, correct_spacing: number, row_start: boolean): Array<any>{
 
-        for(let val of section.tones) {
+        //const tone_total: number = section.tones.length
+        //const beat: number = 2 //歌曲节拍（丢手绢2/4，以4分音符为一拍，每小节两拍）
+        const oneBeat: number = 4 //4分音符为一拍
+
+
+        let _x: number = 0
+        let _y:number = y
+        if(row_start) {
+            _x = this.default_spacing
+        } else {
+            _x = x + correct_spacing
+        }
+
+        let current_beat: number = 0
+
+        let nodes: Array<any> = []
+        for(let idx in section.tones) {
+
+            const val = section.tones[idx]
             switch (val.duration) {
-                case 8:
+                case 2:
+                    break
+                case 4: //4分音符
 
-                case 16:
-                case 32:
+                    _x += correct_spacing
+                    break
+                case 8: //八分音符
+                    if (oneBeat < 8) {}
+                    if (oneBeat == 8) {}
+                    if (oneBeat > 8) {}
+                    current_beat += 0.5
+                    nodes.push({
+                        option: {width: 10, height: 2, x: _x, y: _y + 3},
+                        type: 'rect',
+                    })
+                    _x += correct_spacing
+                    break
+                case 16: //十六分音符
+
+                    _x += correct_spacing
+                    break
+                case 32: //三十二分音符
+                    break
+                default:
+                    if(val.duration > 0) {
+                        _x += correct_spacing
+                    }
+
             }
         }
+
+        return nodes
+
     }
 
 }

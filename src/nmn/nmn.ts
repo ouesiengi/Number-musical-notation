@@ -15,8 +15,6 @@ export default class Nmn {
     public parse(data: any): Nmn{
         let staves: Array<any> = data.tracks[0].staves || []
         this.layout.parse(staves)
-
-
         return this
     }
 
@@ -53,8 +51,7 @@ export default class Nmn {
     }
 
     //数字音符 default_spacing = 10
-    setNumberToneNode(tones: Array<string>, attrs?: object): Element {
-        let tone: number = Transition.parseTone(tones[0])
+    setNumberToneNode(tone: any, attrs?: object): Element {
         let node: Element = this.elements.createNode('text', attrs)
         let text: Text = this.elements.createTextNode(String(tone))
         node.appendChild(text)
