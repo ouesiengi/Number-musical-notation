@@ -166,18 +166,15 @@ class Layout {
 
     analyzing(section: any, x: number, y: number, correct_spacing: number, row_start: boolean): Array<any>{
 
-        //const tone_total: number = section.tones.length
-        //const beat: number = 2 //歌曲节拍（丢手绢2/4，以4分音符为一拍，每小节两拍）
-        const oneBeat: number = 4 //4分音符为一拍
-
+        const toneTotal: number = section.tones.length
+        const beat: number = 2 //歌曲节拍（丢手绢2/4，以4分音符为一拍，每小节两拍）
+        const score: number = 4 //4分音符为一拍
+        //const normalBeat: boolean = toneTotal % score == 0 ? true : false
 
         let _x: number = 0
-        let _y:number = y
-        if(row_start) {
-            _x = this.default_spacing
-        } else {
-            _x = x + correct_spacing
-        }
+        let _y: number = y
+
+        _x = row_start ? this.default_spacing : (x + correct_spacing)
 
         let current_beat: number = 0
 
@@ -193,9 +190,9 @@ class Layout {
                     _x += correct_spacing
                     break
                 case 8: //八分音符
-                    if (oneBeat < 8) {}
-                    if (oneBeat == 8) {}
-                    if (oneBeat > 8) {}
+                    if (beat < 8) {}
+                    if (beat == 8) {}
+                    if (beat > 8) {}
                     current_beat += 0.5
                     nodes.push({
                         option: {width: 10, height: 2, x: _x, y: _y + 3},
