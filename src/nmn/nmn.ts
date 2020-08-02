@@ -1,6 +1,6 @@
 import Elements from "./elements";
 import {Layout, Options} from "./layout";
-import {Transition} from "./notations"
+
 
 export default class Nmn {
 
@@ -12,42 +12,15 @@ export default class Nmn {
     }
 
     //data parse
-    public parse(data: any): Nmn{
+    public parse(data: any): Nmn {
         let staves: Array<any> = data.tracks[0].staves || []
         this.layout.parse(staves)
         return this
     }
 
-    //反复记号 default_spacing = 10
-    setAgainNode() {
-
-    }
-
     //小节分隔符 default_spacing = 1
     setSegmentNode(attrs?: object): Element {
-        //console.log(attrs)
         return this.elements.createNode('rect', attrs)
-    }
-
-    //附点音符 default_spacing = 10
-    setDottedNode() {
-
-    }
-
-    //音符时间长度
-    setNotationLength(len: number, option: any): any {
-        switch (len) {
-            case 8:
-                const attr: object = {width: 10, height: 2, x: option.x, y: option.y + 5}
-                return this.elements.createNode('rect', attr)
-
-        }
-        return false
-    }
-
-    //连音符
-    setSlur() {
-
     }
 
     //数字音符 default_spacing = 10
@@ -60,9 +33,8 @@ export default class Nmn {
 
     render(renderer: any): void {
 
-        renderer.resize(this.layout.ctx_width, this.layout.ctx_height)
+        renderer.resize(this.layout.ctxWidth, this.layout.ctxHeight)
         const ctx = renderer.getContext()
-        ctx.setFont('Arial', '18', '')
 
         const maps = this.layout.render()
 
@@ -71,11 +43,6 @@ export default class Nmn {
             switch (val.type) {
                 case 'text':
                     node = this.setNumberToneNode(val.tones, val.option);
-
-                    // const x = this.setNotationLength(val.duration, val.option)
-                    // if (x) {
-                    //     ctx.groups[0].appendChild(x)
-                    // }
                     break;
                 case 'rect':
                     node = this.setSegmentNode(val.option)

@@ -45,7 +45,7 @@ class LenNotation implements OffsetNotations {
 }
 
 class Transition {
-    static parseTone(tone: string): number {
+    public parseTone(tone: string): number {
         let t:string = tone.substr(0, 1)
         switch (t) {
             case 'C':
@@ -68,4 +68,4 @@ class Transition {
     }
 }
 
-export {SegmentNotation, NumberNotation, LenNotation, Transition}
+export {NumberNotation, SegmentNotation, LenNotation, Transition}
